@@ -18,6 +18,7 @@ from sqlalchemy import create_engine
 
 
 app = Flask(__name__)
+app.static_folder = 'static'
 
 def tokenize(text):
     """Defines the tokenizer for the text messages
