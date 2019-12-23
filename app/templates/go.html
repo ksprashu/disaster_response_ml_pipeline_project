@@ -9,7 +9,7 @@
 
 {% block content %}
     <h1 class="text-center">Classifications</h1>
-        <ul class="list-group">
+        <ul class="list-group list-group-horizontal text-center">
             {% for category, classification in classification_result.items() %}
                 {% if classification == 1 %}
                     <li class="list-group-item list-group-item-success text-center">{{category.replace('_', ' ').title()}}</li>
@@ -17,8 +17,8 @@
                     <li class="list-group-item list-group-item-dark text-center">{{category.replace('_', ' ').title()}}</li>
                 {% endif %}
             {% endfor %}
-
-        </div>
-    </div>
+        </ul>
+    <!-- </div> -->
+    <!-- </div> -->
 
 {% endblock %}
