@@ -9,6 +9,9 @@
 
 {% block content %}
     <h1 class="text-center">Classifications</h1>
+        <div class="text-center pb-5">
+            <span id="sh_label">Click Here</span> to show / hide all classfication labels
+        </div>
         <ul class="list-group list-group-horizontal text-center">
             {% for category, classification in classification_result.items() %}
                 {% if classification == 1 %}
