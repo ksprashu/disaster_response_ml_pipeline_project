@@ -15,15 +15,29 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 
 def tokenize(text):
+    """Defines the tokenizer for the text messages
+
+    The method first tokenizes the text into words using nltk.
+    Then we will remove all the words that contains only special characters
+    or punctuations. Next we will remove all the stop words based on wordnet
+    Finally we will lemmatize the words to its root for both nouns and verbs
+    
+    Args:
+        text: A tweet or message that has to be analyzed
+
+    Returns:
+        The tokens associated with the given text
+    """
+    
     tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
+    tokens = [tok for tok in tokens if re.search('[A-Za-z0-9]', tok) != None]
+    tokens = [tok.lower().strip() for tok in tokens 
+                    if tok not in stopwords.words('english')]
+    wnl = WordNetLemmatizer()
+    tokens = [wnl.lemmatize(wnl.lemmatize(tok), pos='v') for tok in tokens]            
 
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
+    return tokens
 
-    return clean_tokens
 
 # load data
 engine = create_engine('sqlite:///../data/YourDatabaseName.db')
