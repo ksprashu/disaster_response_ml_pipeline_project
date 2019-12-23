@@ -39,13 +39,19 @@ def load_data(database_filepath):
         database_filepath: The path to the SQLlite database
 
     Returns:
-        Dataframe of messages and categories
+        X: The vector of messages
+        Y: The vector of labels for the messages
+        category_names: An array of category names that the columns of Y
     """
 
     engine = create_engine('sqlite:///' + database_filepath)
     df = pd.read_sql('messages', engine)
 
-    return df
+    X = df['message']
+    Y = df.iloc[:,4:]
+    category_names = Y.columns.tolist()
+
+    return X, Y, category_names
 
     
 def tokenize(text):
@@ -67,6 +73,7 @@ def tokenize(text):
     tokens = [tok for tok in tokens if re.search('[A-Za-z0-9]', tok) != None]
     tokens = [tok.lower().strip() for tok in tokens 
                     if tok not in stopwords.words('english')]
+    wnl = WordNetLemmatizer()
     tokens = [wnl.lemmatize(wnl.lemmatize(tok), pos='v') for tok in tokens]            
 
     return tokens
@@ -116,7 +123,7 @@ def evaluate_model(model, X_test, Y_test, category_names):
     Y_pred = model.predict(X_test)
     Y_trans = Y_pred.transpose()
 
-    for i in range(0,len(Y_test.columns.size)):
+    for i in range(0,Y_test.columns.size):
         print(classification_report(Y_test.iloc[:,i].tolist(), Y_trans[i]))
 
 
@@ -128,7 +135,8 @@ def save_model(model, model_filepath):
         model_filepath: the filesystem path where to save the model to
     """
 
-    pickle.dump(model, model_filepath)
+    with open(model_filepath, 'wb') as file:
+        pickle.dump(model, file)
 
 
 def main():
