@@ -94,8 +94,8 @@ def save_data(df, database_filename):
         database_filename: The name to be used while saving the sqllite db file
     """
 
-    engine = create_engine('sqllite:///{}'.format(database_filename))
-    df.to_sql(database_filename, engine, index=False)
+    engine = create_engine('sqlite:///' + database_filename)
+    df.to_sql('messages', engine, index=False)
 
 
 def main():
