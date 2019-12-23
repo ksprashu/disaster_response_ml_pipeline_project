@@ -124,7 +124,8 @@ def evaluate_model(model, X_test, Y_test, category_names):
     Y_trans = Y_pred.transpose()
 
     for i in range(0,Y_test.columns.size):
-        print(classification_report(Y_test.iloc[:,i].tolist(), Y_trans[i]))
+        print(classification_report(
+            Y_test.iloc[:,i].tolist(), Y_trans[i], zero_division=0))
 
 
 def save_model(model, model_filepath):
