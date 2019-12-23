@@ -13,6 +13,8 @@ from nltk.corpus import stopwords
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
+from plotly.graph_objs import Pie
+
 import joblib
 from sqlalchemy import create_engine
 
@@ -62,25 +64,57 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+
+    # get the counts of messages against each label and category
+    cat_counts = df.filter(df.columns[4:7].tolist()).sum().sort_values(ascending=False)
+    cat_names = list(cat_counts.index)
+
+    label_counts = df.filter(df.columns[7:].tolist()).sum().sort_values(ascending=False)
+    label_names = list(label_counts.index)
+    # print(df.columns[4:].str.title())
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
-                Bar(
-                    x=genre_names,
-                    y=genre_counts
+                Pie(
+                    labels=genre_names,
+                    values=genre_counts
                 )
             ],
 
             'layout': {
-                'title': 'Distribution of Message Genres',
+                'title': 'Distribution of Message Genres'
+            }
+        },
+        {
+            'data': [
+                Pie(
+                    labels=cat_names,
+                    values=cat_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Label Categories'
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=label_names,
+                    y=label_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Message Labels',
                 'yaxis': {
                     'title': "Count"
                 },
                 'xaxis': {
-                    'title': "Genre"
+                    'title': "Labels"
                 }
             }
         }
@@ -103,7 +137,7 @@ def go():
     # use model to predict classification for query
     classification_labels = model.predict([query])[0]
     classification_results = dict(zip(df.columns[4:], classification_labels))
-    print(classification_results)
+    # print(classification_results)
 
     # This will render the go.html Please see that file. 
     return render_template(

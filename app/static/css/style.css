@@ -7,3 +7,7 @@
 .list-group-item-dark {
     display: none;
 } */
+
+.container {
+    padding-bottom: 50px;
+}
